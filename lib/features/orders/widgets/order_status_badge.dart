@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/l10n/app_strings.dart';
 
 class OrderStatusBadge extends StatelessWidget {
@@ -15,7 +15,7 @@ class OrderStatusBadge extends StatelessWidget {
   final bool compact;
 
   static _BadgeStyle _styleFor(String status) {
-    switch (status) {
+    switch (normalizeOrderStatusCode(status)) {
       case 'created':
         return const _BadgeStyle(Color(0xFF1565C0), Color(0xFFE3F2FD));
       case 'confirmed':

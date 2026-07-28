@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/camera_permission.dart';
 import 'package:safed_prixod/core/locale_provider.dart';
 import 'package:safed_prixod/l10n/app_strings.dart';

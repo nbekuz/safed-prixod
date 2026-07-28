@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:safed_core/safed_core.dart';
-import 'package:safed_prixod/l10n/app_locale.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/l10n/app_strings.dart';
 import 'package:safed_prixod/l10n/product_name.dart';
 import 'package:safed_prixod/features/orders/order_line_helpers.dart';
@@ -9,7 +8,6 @@ class OrderProductTile extends StatelessWidget {
   const OrderProductTile({
     super.key,
     required this.line,
-    required this.locale,
     required this.l10n,
     this.readOnly = false,
     this.canEditQty = false,
@@ -18,7 +16,6 @@ class OrderProductTile extends StatelessWidget {
   });
 
   final Map<String, dynamic> line;
-  final AppLocale locale;
   final AppStrings l10n;
   final bool readOnly;
   final bool canEditQty;
@@ -29,9 +26,9 @@ class OrderProductTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final lineId = line['id'] as int?;
     final shelf = shelfLocationFromLine(line);
-    final name = productNameForLocale(line, locale, l10n.productFallback);
-    final qtySuffix = quantityFieldSuffix(line, locale);
-    final orderedQty = formatOrderedQuantityShort(line, locale);
+    final name = productNameForLocale(line, l10n.productFallback);
+    final qtySuffix = quantityFieldSuffix(line);
+    final orderedQty = formatOrderedQuantityShort(line);
     final hasShelf = shelf != null && shelf.isNotEmpty;
     final qtyValue = formatQuantityNumber(line['quantity']);
     final showEdit =

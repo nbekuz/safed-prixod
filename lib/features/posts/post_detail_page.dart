@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/catalog_providers.dart';
-import 'package:safed_prixod/core/locale_provider.dart';
+import 'package:safed_prixod/core/app_language.dart';
 
 final postDetailProvider = FutureProvider.autoDispose
     .family<Map<String, dynamic>, int>((ref, id) {
@@ -29,10 +29,10 @@ class PostDetailPage extends ConsumerWidget {
         .toList();
   }
 
-  String _content(Map<String, dynamic> post, String locale) {
+  String _content(Map<String, dynamic> post) {
     final tr = post['translations'];
     if (tr is Map) {
-      for (final code in [locale, 'uz', 'ru', 'en']) {
+      for (final code in [kAppLanguageCode, 'ru', 'uz', 'en']) {
         final block = tr[code];
         if (block is Map) {
           final c = block['content']?.toString().trim();
@@ -48,21 +48,20 @@ class PostDetailPage extends ConsumerWidget {
     WidgetRef ref,
     Map<String, dynamic> p,
   ) async {
-    final locale = ref.read(localeProvider).languageCode;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Post o\'chirilsinmi?'),
-        content: Text(postTitle(p, locale: locale)),
+        title: const Text('Удалить пост?'),
+        content: Text(postTitle(p, locale: kAppLanguageCode)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Bekor'),
+            child: const Text('Отмена'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'O\'chirish',
+              'Удалить',
               style: TextStyle(color: Colors.red),
             ),
           ),
@@ -72,7 +71,7 @@ class PostDetailPage extends ConsumerWidget {
     if (ok != true) return;
     try {
       await ref.read(adminPostsApiProvider).delete(postId);
-      showApiSuccess(ref, 'O\'chirildi');
+      showApiSuccess(ref, 'Удалено');
       if (context.mounted) context.pop();
     } catch (e) {
       showApiError(ref, e);
@@ -81,7 +80,6 @@ class PostDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider).languageCode;
     final async = ref.watch(postDetailProvider(postId));
     final compact = MediaQuery.sizeOf(context).width < 380;
     final horizontalPadding = compact ? 12.0 : 16.0;
@@ -89,7 +87,7 @@ class PostDetailPage extends ConsumerWidget {
 
     return SafedScaffold(
       appBar: AppBar(
-        title: Text('Post #$postId'),
+        title: Text('Пост #$postId'),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
@@ -106,14 +104,14 @@ class PostDetailPage extends ConsumerWidget {
             padding: EdgeInsets.all(horizontalPadding),
             children: [
               Text(
-                postTitle(p, locale: locale),
+                postTitle(p, locale: kAppLanguageCode),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                '${p['is_active'] == true ? 'Faol' : 'Nofaol'} · ${p['created_at']?.toString().split('T').first ?? ''}',
+                '${p['is_active'] == true ? 'Активный' : 'Неактивный'} · ${p['created_at']?.toString().split('T').first ?? ''}',
                 style: const TextStyle(color: AppTheme.textSecondary),
               ),
               if (urls.isNotEmpty) ...[
@@ -136,7 +134,7 @@ class PostDetailPage extends ConsumerWidget {
                 ),
               ],
               const SizedBox(height: 16),
-              Text(_content(p, locale)),
+              Text(_content(p)),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -144,7 +142,7 @@ class PostDetailPage extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () => context.push('/posts/$postId/edit'),
                   icon: const Icon(Icons.edit),
-                  label: const Text('Tahrirlash'),
+                  label: const Text('Редактировать'),
                 ),
               ),
               const SizedBox(height: 12),
@@ -155,7 +153,7 @@ class PostDetailPage extends ConsumerWidget {
                   onPressed: () => _delete(context, ref, p),
                   icon: const Icon(Icons.delete_outline, color: Colors.red),
                   label: const Text(
-                    'O\'chirish',
+                    'Удалить',
                     style: TextStyle(color: Colors.red),
                   ),
                 ),

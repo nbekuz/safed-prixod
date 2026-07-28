@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/catalog_providers.dart';
-import 'package:safed_prixod/core/locale_provider.dart';
+import 'package:safed_prixod/core/app_language.dart';
 
 class ProductsListPage extends ConsumerStatefulWidget {
   const ProductsListPage({super.key});
@@ -52,22 +52,21 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
   }
 
   Future<void> _confirmDelete(Map<String, dynamic> product) async {
-    final locale = ref.read(localeProvider).languageCode;
-    final title = productTitle(product, locale: locale);
+    final title = productTitle(product, locale: kAppLanguageCode);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Mahsulot o\'chirilsinmi?'),
+        title: const Text('Удалить товар?'),
         content: Text(title),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Bekor'),
+            child: const Text('Отмена'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'O\'chirish',
+              'Удалить',
               style: TextStyle(color: Colors.red),
             ),
           ),
@@ -77,7 +76,7 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
     if (ok != true) return;
     try {
       await ref.read(adminProductsApiProvider).delete(product['id'] as int);
-      showApiSuccess(ref, 'O\'chirildi');
+      showApiSuccess(ref, 'Удалено');
       await _load();
     } catch (e) {
       showApiError(ref, e);
@@ -86,14 +85,13 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final locale = ref.watch(localeProvider).languageCode;
     final maxPage = (_total / _pageSize).ceil().clamp(1, 9999);
     final compact = MediaQuery.sizeOf(context).width < 380;
     final horizontalPadding = compact ? 12.0 : 16.0;
 
     return SafedScaffold(
       appBar: AppBar(
-        title: const Text('Mahsulotlar'),
+        title: const Text('Товары'),
         actions: [
           IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
         ],
@@ -117,7 +115,7 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
             child: TextField(
               controller: _searchCtrl,
               decoration: InputDecoration(
-                hintText: 'Qidirish',
+                hintText: 'Поиск',
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),
@@ -136,7 +134,7 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
             child: _loading && _rows.isEmpty
                 ? const Center(child: CircularProgressIndicator())
                 : _rows.isEmpty
-                ? const Center(child: Text('Mahsulotlar yo\'q'))
+                ? const Center(child: Text('Нет товаров'))
                 : RefreshIndicator(
                     onRefresh: () => _load(),
                     child: ListView.separated(
@@ -157,7 +155,7 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
                                 ? VisualDensity.compact
                                 : VisualDensity.standard,
                             title: Text(
-                              productTitle(p, locale: locale),
+                              productTitle(p, locale: kAppLanguageCode),
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                               ),
@@ -165,7 +163,7 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: Text(
-                              '${localizedFromMap(p['category']?['name'], locale: locale)} · $price so\'m · miqdor: ${p['quantity'] ?? 0}',
+                              '${localizedFromMap(p['category']?['name'], locale: kAppLanguageCode)} · $price сум · кол-во: ${p['quantity'] ?? 0}',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -182,11 +180,11 @@ class _ProductsListPageState extends ConsumerState<ProductsListPage> {
                               itemBuilder: (_) => const [
                                 PopupMenuItem(
                                   value: 'edit',
-                                  child: Text('Tahrir'),
+                                  child: Text('Редактировать'),
                                 ),
                                 PopupMenuItem(
                                   value: 'delete',
-                                  child: Text('O\'chirish'),
+                                  child: Text('Удалить'),
                                 ),
                               ],
                             ),

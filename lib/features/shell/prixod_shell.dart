@@ -18,17 +18,22 @@ class PrixodShell extends StatelessWidget {
           NavigationDestination(
             icon: Icon(Icons.inventory_2_outlined),
             selectedIcon: Icon(Icons.inventory_2),
-            label: 'Yig\'ish',
+            label: 'Комплектация',
           ),
           NavigationDestination(
             icon: Icon(Icons.shopping_bag_outlined),
             selectedIcon: Icon(Icons.shopping_bag),
-            label: 'Mahsulotlar',
+            label: 'Товары',
           ),
           NavigationDestination(
             icon: Icon(Icons.article_outlined),
             selectedIcon: Icon(Icons.article),
-            label: 'Postlar',
+            label: 'Посты',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Профиль',
           ),
         ],
       ),

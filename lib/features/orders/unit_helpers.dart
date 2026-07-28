@@ -1,7 +1,6 @@
-import 'package:safed_prixod/l10n/app_locale.dart';
+import 'package:safed_prixod/core/app_language.dart';
 
-/// `unit.name` ichidagi lokalizatsiya: uz «dona», ru «кг», …
-String localizedUnitName(Map<String, dynamic>? unit, AppLocale locale) {
+String localizedUnitName(Map<String, dynamic>? unit) {
   if (unit == null) return '';
   final name = unit['name'];
   if (name is! Map) return '';
@@ -12,12 +11,12 @@ String localizedUnitName(Map<String, dynamic>? unit, AppLocale locale) {
     return (v == null || v.isEmpty) ? null : v;
   }
 
-  final lang = name[locale.languageCode];
+  final lang = name[kAppLanguageCode];
   if (lang is Map) {
     final v = pick(lang);
     if (v != null) return v;
   }
-  for (final code in ['uz', 'ru', 'en']) {
+  for (final code in ['ru', 'uz', 'en']) {
     final alt = name[code];
     if (alt is Map) {
       final v = pick(alt);
@@ -27,12 +26,11 @@ String localizedUnitName(Map<String, dynamic>? unit, AppLocale locale) {
   return '';
 }
 
-String unitNameFromLine(Map<String, dynamic> line, AppLocale locale) {
+String unitNameFromLine(Map<String, dynamic> line) {
   final p = line['product'];
   if (p is Map && p['unit'] is Map) {
     final name = localizedUnitName(
       Map<String, dynamic>.from(p['unit'] as Map),
-      locale,
     );
     if (name.isNotEmpty) return name;
   }
@@ -40,12 +38,11 @@ String unitNameFromLine(Map<String, dynamic> line, AppLocale locale) {
   final sale = line['product_unit'] ?? line['sale_unit'];
   if (p is Map) {
     final su = p['sale_unit'] ?? p['product_unit'] ?? sale;
-    return _fallbackUnitLabel(su?.toString(), locale);
+    return _fallbackUnitLabel(su?.toString());
   }
-  return _fallbackUnitLabel(sale?.toString(), locale);
+  return _fallbackUnitLabel(sale?.toString());
 }
 
-/// API `product_unit`: `piece` | `gram` | `kg`.
 String productUnitApiFromLine(Map<String, dynamic> line) {
   final p = line['product'];
   final raw = line['product_unit'] ??
@@ -56,12 +53,10 @@ String productUnitApiFromLine(Map<String, dynamic> line) {
   return 'piece';
 }
 
-String _fallbackUnitLabel(String? saleUnit, AppLocale locale) {
+String _fallbackUnitLabel(String? saleUnit) {
   if (saleUnit == null) return '';
   final u = saleUnit.toLowerCase();
-  if (u == 'piece' || u == 'pcs') {
-    return locale == AppLocale.ru ? 'шт' : 'dona';
-  }
+  if (u == 'piece' || u == 'pcs') return 'шт';
   if (u == 'kg') return 'kg';
   if (u == 'g') return 'g';
   return saleUnit;

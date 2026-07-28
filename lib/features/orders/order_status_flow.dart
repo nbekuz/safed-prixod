@@ -1,4 +1,4 @@
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/l10n/app_strings.dart';
 
 /// PATCH /orders/{id}/status/ — ombor (prixod) uchun ruxsat etilgan o'tishlar.
@@ -26,7 +26,7 @@ List<OrderStatusTransition> orderStatusTransitions(
   String currentStatus,
   AppStrings l10n,
 ) {
-  switch (currentStatus) {
+  switch (normalizeOrderStatusCode(currentStatus)) {
     case 'created':
       return [
         OrderStatusTransition(

@@ -1,11 +1,11 @@
 {
-    "name": "safed_prixod",
-    "short_name": "safed_prixod",
+    "name": "Safet Pick",
+    "short_name": "Safet Pick",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Warehouse order picking app for Safet.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

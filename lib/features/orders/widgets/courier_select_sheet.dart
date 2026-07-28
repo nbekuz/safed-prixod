@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/app_providers.dart';
 import 'package:safed_prixod/core/locale_provider.dart';
 import 'package:safed_prixod/features/orders/order_format.dart';

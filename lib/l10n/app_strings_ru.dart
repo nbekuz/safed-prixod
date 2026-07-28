@@ -1,3 +1,4 @@
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/l10n/app_strings.dart';
 
 class AppStringsRu extends AppStrings {
@@ -56,7 +57,7 @@ class AppStringsRu extends AppStrings {
   String get statusLabel => 'Статус';
 
   @override
-  String statusDisplayName(String status) => switch (status) {
+  String statusDisplayName(String status) => switch (normalizeOrderStatusCode(status)) {
     'created' => 'Создан',
     'confirmed' => 'Подтверждён',
     'picking' => 'Комплектация',
@@ -219,4 +220,37 @@ class AppStringsRu extends AppStrings {
 
   @override
   String productFallback(int productId) => 'Товар #$productId';
+
+  @override
+  String get profileTitle => 'Профиль';
+
+  @override
+  String get profileNotifications => 'Уведомления';
+
+  @override
+  String get profileRole => 'Роль';
+
+  @override
+  String get profileLogout => 'Выйти';
+
+  @override
+  String get profileLogoutConfirm => 'Выйти из аккаунта?';
+
+  @override
+  String get profileEditTitle => 'Редактировать профиль';
+
+  @override
+  String get profileFirstName => 'Имя';
+
+  @override
+  String get profileLastName => 'Фамилия';
+
+  @override
+  String get profileSave => 'Сохранить';
+
+  @override
+  String get profileNameRequired => 'Укажите имя или фамилию';
+
+  @override
+  String get profileSaved => 'Профиль обновлён';
 }

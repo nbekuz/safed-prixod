@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safed_prixod/core/api_config.dart';
-import 'package:safed_core/safed_core.dart';
 import 'package:safed_prixod/core/app_providers.dart';
+import 'package:safed_prixod/core/auth_strings.dart';
+import 'package:safed_prixod/core/widgets/auth_legal_footer.dart';
+import 'package:safed_prixod/core/push_notifications.dart';
+import 'package:safed_prixod/core/core.dart';
+import 'package:safed_prixod/widgets/uzbek_phone_input_formatter.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -53,7 +57,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       s.hasGroup('Super Admin');
 
   Future<void> _signIn() async {
-    final l10n = ref.read(staffAuthL10nProvider);
+    const l10n = prixodAuthStrings;
     final digits = UzbekPhoneInputFormatter.digitsOnly(_phoneController.text);
     if (digits.length != 9 || _passwordController.text.isEmpty) {
       ref.read(appToastProvider.notifier).warning(l10n.credentialsRequired);
@@ -73,6 +77,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           .read(tokenStorageProvider)
           .saveTokens(access: session.access, refresh: session.refresh);
       ref.read(accessTokenProvider.notifier).state = session.access;
+      await PushNotifications.syncToken(ref);
       if (mounted) {
         ref
             .read(appToastProvider.notifier)
@@ -88,7 +93,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = ref.watch(staffAuthL10nProvider);
+    const l10n = prixodAuthStrings;
     final baseStyle = Theme.of(context).textTheme.titleMedium;
     final inputStyle = baseStyle?.copyWith(
       fontWeight: FontWeight.w600,
@@ -128,10 +133,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Align(
-                alignment: Alignment.centerRight,
-                child: AuthLanguageSwitcher(),
-              ),
               SizedBox(height: topGap),
               Text(
                 ApiConfig.brandName,
@@ -235,6 +236,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       : Text(l10n.signIn),
                 ),
               ),
+              const SizedBox(height: 16),
+              const AuthLegalFooter(),
             ],
           ),
         ),

@@ -1,8 +1,6 @@
-import 'package:safed_prixod/l10n/app_locale.dart';
 import 'package:safed_prixod/l10n/app_strings_ru.dart';
-import 'package:safed_prixod/l10n/app_strings_uz.dart';
 
-/// All user-visible strings. Add a key here, then implement in uz/ru files.
+/// All user-visible strings (Russian only).
 abstract class AppStrings {
   String get appSubtitle;
   String get phone;
@@ -74,12 +72,17 @@ abstract class AppStrings {
   String orderPrice(String amount);
   String productFallback(int productId);
 
-  static AppStrings of(AppLocale locale) {
-    switch (locale) {
-      case AppLocale.ru:
-        return AppStringsRu();
-      case AppLocale.uz:
-        return AppStringsUz();
-    }
-  }
+  String get profileTitle;
+  String get profileNotifications;
+  String get profileRole;
+  String get profileLogout;
+  String get profileLogoutConfirm;
+  String get profileEditTitle;
+  String get profileFirstName;
+  String get profileLastName;
+  String get profileSave;
+  String get profileNameRequired;
+  String get profileSaved;
+
+  static AppStrings get current => AppStringsRu();
 }

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/catalog_providers.dart';
 import 'package:safed_prixod/features/products/product_detail_page.dart';
 
@@ -168,7 +168,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   Future<void> _pickImages() async {
     final total = _existingImageUrls.length + _newImages.length;
     if (total >= 8) {
-      ref.read(appToastProvider.notifier).warning('Maksimum 8 ta rasm');
+      ref.read(appToastProvider.notifier).warning('Максимум 8 изображений');
       return;
     }
     final picked = await _picker.pickMultiImage(imageQuality: 85);
@@ -199,13 +199,13 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     if (_categoryId == null) {
-      ref.read(appToastProvider.notifier).warning('Kategoriyani tanlang');
+      ref.read(appToastProvider.notifier).warning('Выберите категорию');
       return;
     }
     if (_translationsPayload().isEmpty) {
       ref
           .read(appToastProvider.notifier)
-          .warning('Kamida bitta til uchun nom kiriting');
+          .warning('Введите название хотя бы на одном языке');
       return;
     }
 
@@ -223,7 +223,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
         showApiSuccess(ref, 'Saqlandi');
       } else {
         await api.create(fd);
-        showApiSuccess(ref, 'Mahsulot yaratildi');
+        showApiSuccess(ref, 'Товар создан');
       }
       if (mounted) context.pop();
     } catch (e) {
@@ -273,7 +273,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
         initialValue: _unitId,
         isExpanded: true,
         decoration: const InputDecoration(
-          labelText: 'Birlik',
+          labelText: 'Единица',
           border: OutlineInputBorder(),
         ),
         items: [
@@ -295,7 +295,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
 
     return SafedScaffold(
       appBar: AppBar(
-        title: Text(widget.isEdit ? 'Mahsulotni tahrirlash' : 'Yangi mahsulot'),
+        title: Text(widget.isEdit ? 'Редактировать товар' : 'Новый товар'),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -311,7 +311,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                       initialValue: _categoryId,
                       isExpanded: true,
                       decoration: const InputDecoration(
-                        labelText: 'Kategoriya *',
+                        labelText: 'Категория *',
                         border: OutlineInputBorder(),
                       ),
                       items: cats
@@ -350,21 +350,21 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                   TextFormField(
                     controller: _priceCtrl,
                     decoration: const InputDecoration(
-                      labelText: 'Narx *',
+                      labelText: 'Цена *',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
                     validator: (v) => (v == null || v.trim().isEmpty)
-                        ? 'Narx kiriting'
+                        ? 'Введите цену'
                         : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _qtyCtrl,
                     decoration: const InputDecoration(
-                      labelText: 'Miqdor',
+                      labelText: 'Количество',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
@@ -373,7 +373,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                   TextFormField(
                     controller: _shelfCtrl,
                     decoration: const InputDecoration(
-                      labelText: 'Tokcha (shelf_location)',
+                      labelText: 'Полка (shelf_location)',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -381,17 +381,17 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                   TextFormField(
                     controller: _barcodeCtrl,
                     decoration: const InputDecoration(
-                      labelText: 'Shtrix-kod',
+                      labelText: 'Штрих-код',
                       border: OutlineInputBorder(),
                     ),
                   ),
                   SwitchListTile(
-                    title: const Text('Faol'),
+                    title: const Text('Активен'),
                     value: _isActive,
                     onChanged: (v) => setState(() => _isActive = v),
                   ),
                   SwitchListTile(
-                    title: const Text('Chegirma'),
+                    title: const Text('Скидка'),
                     value: _isDiscount,
                     onChanged: (v) => setState(() => _isDiscount = v),
                   ),
@@ -416,7 +416,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                           TextFormField(
                             controller: _nameCtrls[lang],
                             decoration: InputDecoration(
-                              labelText: 'Nom ($lang)',
+                              labelText: 'Название ($lang)',
                               border: const OutlineInputBorder(),
                             ),
                           ),
@@ -424,7 +424,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                           TextFormField(
                             controller: _descCtrls[lang],
                             decoration: InputDecoration(
-                              labelText: 'Tavsif ($lang)',
+                              labelText: 'Описание ($lang)',
                               border: const OutlineInputBorder(),
                             ),
                             maxLines: 2,
@@ -447,7 +447,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                       TextButton.icon(
                         onPressed: _pickImages,
                         icon: const Icon(Icons.add_photo_alternate_outlined),
-                        label: const Text('Qo\'shish'),
+                        label: const Text('Добавить'),
                       ),
                     ],
                   ),
@@ -511,7 +511,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                                 color: Colors.white,
                               ),
                             )
-                          : Text(widget.isEdit ? 'Saqlash' : 'Yaratish'),
+                          : Text(widget.isEdit ? 'Сохранить' : 'Создать'),
                     ),
                   ),
                 ],

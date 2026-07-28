@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/catalog_providers.dart';
-import 'package:safed_prixod/core/locale_provider.dart';
+import 'package:safed_prixod/core/app_language.dart';
 
 final productDetailProvider = FutureProvider.autoDispose
     .family<Map<String, dynamic>, int>((ref, id) {
@@ -20,21 +20,20 @@ class ProductDetailPage extends ConsumerWidget {
     WidgetRef ref,
     Map<String, dynamic> p,
   ) async {
-    final locale = ref.read(localeProvider).languageCode;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Mahsulot o\'chirilsinmi?'),
-        content: Text(productTitle(p, locale: locale)),
+        title: const Text('Удалить товар?'),
+        content: Text(productTitle(p, locale: kAppLanguageCode)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Bekor'),
+            child: const Text('Отмена'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'O\'chirish',
+              'Удалить',
               style: TextStyle(color: Colors.red),
             ),
           ),
@@ -44,7 +43,7 @@ class ProductDetailPage extends ConsumerWidget {
     if (ok != true) return;
     try {
       await ref.read(adminProductsApiProvider).delete(productId);
-      showApiSuccess(ref, 'O\'chirildi');
+      showApiSuccess(ref, 'Удалено');
       if (context.mounted) context.pop();
     } catch (e) {
       showApiError(ref, e);
@@ -53,7 +52,6 @@ class ProductDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider).languageCode;
     final async = ref.watch(productDetailProvider(productId));
     final compact = MediaQuery.sizeOf(context).width < 380;
     final horizontalPadding = compact ? 12.0 : 16.0;
@@ -61,7 +59,7 @@ class ProductDetailPage extends ConsumerWidget {
 
     return SafedScaffold(
       appBar: AppBar(
-        title: Text('Mahsulot #$productId'),
+        title: Text('Товар #$productId'),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
@@ -108,24 +106,24 @@ class ProductDetailPage extends ConsumerWidget {
                 ),
               const SizedBox(height: 16),
               Text(
-                productTitle(p, locale: locale),
+                productTitle(p, locale: kAppLanguageCode),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(height: 12),
               _Row(
-                'Kategoriya',
-                localizedFromMap(p['category']?['name'], locale: locale),
+                'Категория',
+                localizedFromMap(p['category']?['name'], locale: kAppLanguageCode),
               ),
-              _Row('Narx', '${p['price'] ?? '—'} so\'m'),
-              _Row('Chegirma', p['is_discount'] == true ? 'Ha' : 'Yo\'q'),
-              _Row('Miqdor', '${p['quantity'] ?? 0}'),
-              _Row('Tokcha', p['shelf_location']?.toString() ?? '—'),
-              _Row('Faol', p['is_active'] == true ? 'Ha' : 'Yo\'q'),
+              _Row('Цена', '${p['price'] ?? '—'} сум'),
+              _Row('Скидка', p['is_discount'] == true ? 'Да' : 'Нет'),
+              _Row('Количество', '${p['quantity'] ?? 0}'),
+              _Row('Полка', p['shelf_location']?.toString() ?? '—'),
+              _Row('Активен', p['is_active'] == true ? 'Да' : 'Нет'),
               if (p['barcodes'] is List && (p['barcodes'] as List).isNotEmpty)
                 _Row(
-                  'Shtrix-kod',
+                  'Штрих-код',
                   (p['barcodes'] as List)
                       .map((b) => b is Map ? b['barcode'] : null)
                       .whereType<String>()
@@ -138,7 +136,7 @@ class ProductDetailPage extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () => context.push('/products/$productId/edit'),
                   icon: const Icon(Icons.edit),
-                  label: const Text('Tahrirlash'),
+                  label: const Text('Редактировать'),
                 ),
               ),
               const SizedBox(height: 12),
@@ -149,7 +147,7 @@ class ProductDetailPage extends ConsumerWidget {
                   onPressed: () => _delete(context, ref, p),
                   icon: const Icon(Icons.delete_outline, color: Colors.red),
                   label: const Text(
-                    'O\'chirish',
+                    'Удалить',
                     style: TextStyle(color: Colors.red),
                   ),
                 ),

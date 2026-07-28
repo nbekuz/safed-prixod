@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safed_prixod/core/api_config.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 
 final tokenStorageProvider = Provider<TokenStorage>((_) => TokenStorage());
 
@@ -24,6 +24,10 @@ final staffOrdersApiProvider = Provider<StaffOrdersApiService>(
 
 final notificationsApiProvider = Provider<NotificationsApiService>(
   (ref) => NotificationsApiService(ref.watch(dioProvider)),
+);
+
+final devicesApiProvider = Provider<DevicesApiService>(
+  (ref) => DevicesApiService(ref.watch(dioProvider)),
 );
 
 final isLoggedInProvider = Provider<bool>(

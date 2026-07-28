@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:safed_prixod/core/api_config.dart';
 import 'package:safed_prixod/core/app_router.dart';
 import 'package:safed_prixod/core/app_providers.dart';
-import 'package:safed_prixod/core/camera_permission.dart';
-import 'package:safed_core/safed_core.dart';
-import 'package:safed_prixod/core/locale_provider.dart';
-import 'package:safed_prixod/l10n/app_locale.dart';
+import 'package:safed_prixod/core/app_language.dart';
+import 'package:safed_prixod/core/core.dart';
+import 'package:safed_prixod/core/push_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await PushNotifications.initialize();
   runApp(const ProviderScope(child: SafedPrixodApp()));
 }
 
@@ -31,21 +31,14 @@ class _SafedPrixodAppState extends ConsumerState<SafedPrixodApp> {
   }
 
   Future<void> _restore() async {
-    await requestCameraPermissionOnLaunch();
-    await ref.read(staffLocaleProvider.notifier).restore();
-    await ref.read(localeProvider.notifier).restore();
     final t = await ref.read(tokenStorageProvider).readAccess();
     if (t != null && t.isNotEmpty) {
       ref.read(accessTokenProvider.notifier).state = t;
     }
+    await PushNotifications.bind(ref);
     if (mounted) {
-      _printAccessToken(ref.read(accessTokenProvider));
       setState(() => _ready = true);
     }
-  }
-
-  void _printAccessToken(String? token) {
-    debugPrint('[Prixod] access token (full): ${token ?? '(null)'}');
   }
 
   @override
@@ -58,27 +51,21 @@ class _SafedPrixodAppState extends ConsumerState<SafedPrixodApp> {
     }
 
     final loggedIn = ref.watch(isLoggedInProvider);
-    final staffLocale = ref.watch(staffLocaleProvider);
-
-    ref.listen(staffLocaleProvider, (_, next) {
-      final mapped = AppLocale.fromCode(next.languageCode);
-      if (mapped != ref.read(localeProvider)) {
-        ref.read(localeProvider.notifier).setLocale(mapped);
-      }
-    });
 
     ref.listen<String?>(accessTokenProvider, (_, next) {
-      _printAccessToken(next);
+      if ((next ?? '').isNotEmpty) {
+        PushNotifications.syncToken(ref);
+      }
     });
 
     final router = createPrixodRouter(loggedIn: loggedIn);
 
     return MaterialApp.router(
-      title: '${ApiConfig.brandName} Prixod',
+      title: ApiConfig.appDisplayName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      locale: staffLocale,
-      supportedLocales: AppLocale.supportedLocales,
+      locale: kAppLocale,
+      supportedLocales: const [kAppLocale],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

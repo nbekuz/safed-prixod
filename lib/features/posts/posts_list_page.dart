@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/catalog_providers.dart';
-import 'package:safed_prixod/core/locale_provider.dart';
+import 'package:safed_prixod/core/app_language.dart';
 
 class PostsListPage extends ConsumerStatefulWidget {
   const PostsListPage({super.key});
@@ -38,21 +38,20 @@ class _PostsListPageState extends ConsumerState<PostsListPage> {
   }
 
   Future<void> _confirmDelete(Map<String, dynamic> post) async {
-    final locale = ref.read(localeProvider).languageCode;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Post o\'chirilsinmi?'),
-        content: Text(postTitle(post, locale: locale)),
+        title: const Text('Удалить пост?'),
+        content: Text(postTitle(post, locale: kAppLanguageCode)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Bekor'),
+            child: const Text('Отмена'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'O\'chirish',
+              'Удалить',
               style: TextStyle(color: Colors.red),
             ),
           ),
@@ -62,7 +61,7 @@ class _PostsListPageState extends ConsumerState<PostsListPage> {
     if (ok != true) return;
     try {
       await ref.read(adminPostsApiProvider).delete(post['id'] as int);
-      showApiSuccess(ref, 'O\'chirildi');
+      showApiSuccess(ref, 'Удалено');
       await _load();
     } catch (e) {
       showApiError(ref, e);
@@ -71,13 +70,12 @@ class _PostsListPageState extends ConsumerState<PostsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final locale = ref.watch(localeProvider).languageCode;
     final compact = MediaQuery.sizeOf(context).width < 380;
     final horizontalPadding = compact ? 12.0 : 16.0;
 
     return SafedScaffold(
       appBar: AppBar(
-        title: const Text('Postlar'),
+        title: const Text('Посты'),
         actions: [
           PopupMenuButton<bool?>(
             icon: const Icon(Icons.filter_list),
@@ -86,9 +84,9 @@ class _PostsListPageState extends ConsumerState<PostsListPage> {
               _load();
             },
             itemBuilder: (_) => const [
-              PopupMenuItem(value: null, child: Text('Barchasi')),
-              PopupMenuItem(value: true, child: Text('Faol')),
-              PopupMenuItem(value: false, child: Text('Nofaol')),
+              PopupMenuItem(value: null, child: Text('Все')),
+              PopupMenuItem(value: true, child: Text('Активные')),
+              PopupMenuItem(value: false, child: Text('Неактивные')),
             ],
           ),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _load),
@@ -104,7 +102,7 @@ class _PostsListPageState extends ConsumerState<PostsListPage> {
       body: _loading && _rows.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : _rows.isEmpty
-          ? const Center(child: Text('Postlar yo\'q'))
+          ? const Center(child: Text('Нет постов'))
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView.separated(
@@ -126,13 +124,13 @@ class _PostsListPageState extends ConsumerState<PostsListPage> {
                           : VisualDensity.standard,
                       leading: _PostThumbnail(imageUrl: postImageUrl(p)),
                       title: Text(
-                        postTitle(p, locale: locale),
+                        postTitle(p, locale: kAppLanguageCode),
                         style: const TextStyle(fontWeight: FontWeight.w600),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        '${active ? 'Faol' : 'Nofaol'} · ${p['created_at']?.toString().split('T').first ?? ''}',
+                        '${active ? 'Активный' : 'Неактивный'} · ${p['created_at']?.toString().split('T').first ?? ''}',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -147,10 +145,10 @@ class _PostsListPageState extends ConsumerState<PostsListPage> {
                           }
                         },
                         itemBuilder: (_) => const [
-                          PopupMenuItem(value: 'edit', child: Text('Tahrir')),
+                          PopupMenuItem(value: 'edit', child: Text('Редактировать')),
                           PopupMenuItem(
                             value: 'delete',
-                            child: Text('O\'chirish'),
+                            child: Text('Удалить'),
                           ),
                         ],
                       ),

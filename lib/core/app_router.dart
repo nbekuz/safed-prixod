@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safed_prixod/features/auth/login_page.dart';
 import 'package:safed_prixod/features/notifications/staff_notifications_page.dart';
@@ -7,13 +8,18 @@ import 'package:safed_prixod/features/orders/picking_orders_page.dart';
 import 'package:safed_prixod/features/posts/post_detail_page.dart';
 import 'package:safed_prixod/features/posts/post_form_page.dart';
 import 'package:safed_prixod/features/posts/posts_list_page.dart';
+import 'package:safed_prixod/features/profile/profile_edit_page.dart';
+import 'package:safed_prixod/features/profile/profile_page.dart';
 import 'package:safed_prixod/features/products/product_detail_page.dart';
 import 'package:safed_prixod/features/products/product_form_page.dart';
 import 'package:safed_prixod/features/products/products_list_page.dart';
 import 'package:safed_prixod/features/shell/prixod_shell.dart';
 
+final prixodNavigatorKey = GlobalKey<NavigatorState>();
+
 GoRouter createPrixodRouter({required bool loggedIn}) {
   return GoRouter(
+    navigatorKey: prixodNavigatorKey,
     initialLocation: loggedIn ? '/orders' : '/login',
     redirect: (_, state) {
       final loc = state.matchedLocation;
@@ -26,6 +32,22 @@ GoRouter createPrixodRouter({required bool loggedIn}) {
       GoRoute(
         path: '/notifications',
         builder: (_, __) => const StaffNotificationsPage(),
+      ),
+      GoRoute(
+        path: '/profile/edit',
+        builder: (_, state) {
+          final extra = state.extra;
+          var first = '';
+          var last = '';
+          if (extra is Map) {
+            first = extra['first_name']?.toString().trim() ?? '';
+            last = extra['last_name']?.toString().trim() ?? '';
+          }
+          return ProfileEditPage(
+            initialFirstName: first,
+            initialLastName: last,
+          );
+        },
       ),
       GoRoute(
         path: '/orders/:id/check',
@@ -96,6 +118,14 @@ GoRouter createPrixodRouter({required bool loggedIn}) {
               GoRoute(
                 path: '/posts',
                 builder: (_, __) => const PostsListPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (_, __) => const ProfilePage(),
               ),
             ],
           ),

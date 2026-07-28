@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/app_providers.dart';
 import 'package:safed_prixod/core/locale_provider.dart';
 import 'package:safed_prixod/features/orders/barcode_scan_page.dart';
@@ -67,7 +67,6 @@ class _OrderCheckPageState extends ConsumerState<OrderCheckPage> {
 
   Future<void> _onBarcode(String code, List<Map<String, dynamic>> lines) async {
     final l10n = ref.read(l10nProvider);
-    final locale = ref.read(localeProvider);
     final match = matchBarcodeInOrder(lines, code);
 
     if (match == null) {
@@ -90,7 +89,6 @@ class _OrderCheckPageState extends ConsumerState<OrderCheckPage> {
     final payload = await showPickingScanQuantitySheet(
       context: context,
       line: line,
-      locale: locale,
       l10n: l10n,
     );
     if (!mounted || payload == null) return;
@@ -172,7 +170,6 @@ class _OrderCheckPageState extends ConsumerState<OrderCheckPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = ref.watch(l10nProvider);
-    final locale = ref.watch(localeProvider);
     final async = ref.watch(pickingDetailProvider(widget.orderId));
 
     return SafedScaffold(
@@ -247,7 +244,6 @@ class _OrderCheckPageState extends ConsumerState<OrderCheckPage> {
                         children: [
                           OrderProductTile(
                             line: line,
-                            locale: locale,
                             l10n: l10n,
                             readOnly: true,
                           ),

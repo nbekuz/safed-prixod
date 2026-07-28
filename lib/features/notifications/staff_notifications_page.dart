@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/app_providers.dart';
 
 final staffNotificationsProvider =
@@ -17,7 +17,7 @@ class StaffNotificationsPage extends ConsumerWidget {
     final async = ref.watch(staffNotificationsProvider);
     return SafedScaffold(
       appBar: AppBar(
-        title: const Text('Bildirishnomalar'),
+        title: const Text('Уведомления'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -35,7 +35,7 @@ class StaffNotificationsPage extends ConsumerWidget {
                   .toList()
               : <Map<String, dynamic>>[];
           if (items.isEmpty) {
-            return const Center(child: Text('Bildirishnomalar yo\'q'));
+            return const Center(child: Text('Нет уведомлений'));
           }
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(staffNotificationsProvider),

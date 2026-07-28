@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/core/catalog_providers.dart';
 import 'package:safed_prixod/features/posts/post_detail_page.dart';
 
@@ -125,7 +125,7 @@ class _PostFormPageState extends ConsumerState<PostFormPage> {
   Future<void> _pickImages() async {
     final total = _existingImageUrls.length + _newImages.length;
     if (total >= 8) {
-      ref.read(appToastProvider.notifier).warning('Maksimum 8 ta rasm');
+      ref.read(appToastProvider.notifier).warning('Максимум 8 изображений');
       return;
     }
     final picked = await _picker.pickMultiImage(imageQuality: 85);
@@ -203,7 +203,7 @@ class _PostFormPageState extends ConsumerState<PostFormPage> {
 
     return SafedScaffold(
       appBar: AppBar(
-        title: Text(widget.isEdit ? 'Postni tahrirlash' : 'Yangi post'),
+        title: Text(widget.isEdit ? 'Редактировать пост' : 'Новый пост'),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -213,7 +213,7 @@ class _PostFormPageState extends ConsumerState<PostFormPage> {
                 padding: EdgeInsets.all(horizontalPadding),
                 children: [
                   SwitchListTile(
-                    title: const Text('Faol'),
+                    title: const Text('Активен'),
                     value: _isActive,
                     onChanged: (v) => setState(() => _isActive = v),
                   ),
@@ -234,7 +234,7 @@ class _PostFormPageState extends ConsumerState<PostFormPage> {
                           TextFormField(
                             controller: _titleCtrls[lang],
                             decoration: InputDecoration(
-                              labelText: 'Sarlavha ($lang)',
+                              labelText: 'Заголовок ($lang)',
                               border: const OutlineInputBorder(),
                             ),
                           ),
@@ -242,7 +242,7 @@ class _PostFormPageState extends ConsumerState<PostFormPage> {
                           TextFormField(
                             controller: _contentCtrls[lang],
                             decoration: InputDecoration(
-                              labelText: 'Matn ($lang)',
+                              labelText: 'Текст ($lang)',
                               border: const OutlineInputBorder(),
                             ),
                             maxLines: 4,
@@ -258,13 +258,13 @@ class _PostFormPageState extends ConsumerState<PostFormPage> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       const Text(
-                        'Rasmlar',
+                        'Изображения',
                         style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextButton.icon(
                         onPressed: _pickImages,
                         icon: const Icon(Icons.add_photo_alternate_outlined),
-                        label: const Text('Qo\'shish'),
+                        label: const Text('Добавить'),
                       ),
                     ],
                   ),
@@ -327,7 +327,7 @@ class _PostFormPageState extends ConsumerState<PostFormPage> {
                                 color: Colors.white,
                               ),
                             )
-                          : Text(widget.isEdit ? 'Saqlash' : 'Yaratish'),
+                          : Text(widget.isEdit ? 'Сохранить' : 'Создать'),
                     ),
                   ),
                 ],

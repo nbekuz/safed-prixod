@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:safed_core/safed_core.dart';
+import 'package:safed_prixod/core/core.dart';
 import 'package:safed_prixod/features/orders/order_line_helpers.dart';
 import 'package:safed_prixod/features/orders/unit_helpers.dart';
-import 'package:safed_prixod/l10n/app_locale.dart';
 import 'package:safed_prixod/l10n/app_strings.dart';
 import 'package:safed_prixod/l10n/product_name.dart';
 
@@ -19,7 +18,6 @@ class PickingScanPayload {
 Future<PickingScanPayload?> showPickingScanQuantitySheet({
   required BuildContext context,
   required Map<String, dynamic> line,
-  required AppLocale locale,
   required AppStrings l10n,
 }) {
   return showModalBottomSheet<PickingScanPayload>(
@@ -31,7 +29,6 @@ Future<PickingScanPayload?> showPickingScanQuantitySheet({
     ),
     builder: (ctx) => _PickingScanQuantitySheetBody(
       line: line,
-      locale: locale,
       l10n: l10n,
     ),
   );
@@ -40,12 +37,10 @@ Future<PickingScanPayload?> showPickingScanQuantitySheet({
 class _PickingScanQuantitySheetBody extends StatefulWidget {
   const _PickingScanQuantitySheetBody({
     required this.line,
-    required this.locale,
     required this.l10n,
   });
 
   final Map<String, dynamic> line;
-  final AppLocale locale;
   final AppStrings l10n;
 
   @override
@@ -92,11 +87,10 @@ class _PickingScanQuantitySheetBodyState
     final l10n = widget.l10n;
     final name = productNameForLocale(
       widget.line,
-      widget.locale,
       l10n.productFallback,
     );
-    final qtySuffix = quantityFieldSuffix(widget.line, widget.locale);
-    final orderedQty = formatOrderedQuantityShort(widget.line, widget.locale);
+    final qtySuffix = quantityFieldSuffix(widget.line);
+    final orderedQty = formatOrderedQuantityShort(widget.line);
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
 
     return Padding(

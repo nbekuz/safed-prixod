@@ -1,9 +1,8 @@
-import 'package:safed_prixod/l10n/app_locale.dart';
+import 'package:safed_prixod/core/app_language.dart';
 
 /// Product display name from API translations for the active locale.
 String productNameForLocale(
   Map<String, dynamic> line,
-  AppLocale locale,
   String Function(int productId) fallback,
 ) {
   final p = line['product'];
@@ -14,11 +13,11 @@ String productNameForLocale(
 
   final tr = p['translations'];
   if (tr is Map) {
-    final lang = tr[locale.languageCode];
+    final lang = tr[kAppLanguageCode];
     if (lang is Map && lang['name'] != null) {
       return lang['name'].toString();
     }
-    for (final code in ['uz', 'ru']) {
+    for (final code in ['ru', 'uz', 'en']) {
       final alt = tr[code];
       if (alt is Map && alt['name'] != null) return alt['name'].toString();
     }
@@ -30,7 +29,6 @@ String productNameForLocale(
 
 String? productTranslationField(
   Map<String, dynamic> line,
-  AppLocale locale,
   String field,
 ) {
   final p = line['product'];
@@ -44,9 +42,9 @@ String? productTranslationField(
     return (v == null || v.isEmpty) ? null : v;
   }
 
-  final lang = tr[locale.languageCode];
+  final lang = tr[kAppLanguageCode];
   if (lang is Map) return pick(lang);
-  for (final code in ['uz', 'ru', 'en']) {
+  for (final code in ['ru', 'uz', 'en']) {
     final alt = tr[code];
     if (alt is Map) {
       final v = pick(alt);
@@ -56,6 +54,5 @@ String? productTranslationField(
   return null;
 }
 
-/// Mahsulot grammage (masalan «1 kg», «1 кг»).
-String? productGrammageForLocale(Map<String, dynamic> line, AppLocale locale) =>
-    productTranslationField(line, locale, 'grammage');
+String? productGrammageForLocale(Map<String, dynamic> line) =>
+    productTranslationField(line, 'grammage');
