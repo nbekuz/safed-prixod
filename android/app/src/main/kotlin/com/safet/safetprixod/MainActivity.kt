@@ -1,4 +1,4 @@
-package com.safed.safedpickup
+package com.safet.safetprixod
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:125249829236:android:dc37168c407cd00e099421",
         "android_client_info": {
-          "package_name": "com.nbek.safed"
+          "package_name": "com.safet.safed"
         }
       },
       "oauth_client": [],
@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:125249829236:android:9d65636b6e35e809099421",
         "android_client_info": {
-          "package_name": "com.nbek.safetdelivery"
+          "package_name": "com.safet.safetdelivery"
         }
       },
       "oauth_client": [],
@@ -47,7 +47,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:125249829236:android:217363241dc0c02a099421",
         "android_client_info": {
-          "package_name": "com.safed.safedpickup"
+          "package_name": "com.safet.safetprixod"
         }
       },
       "oauth_client": [],
@@ -66,7 +66,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:125249829236:android:36fbb69f546bac6a099421",
         "android_client_info": {
-          "package_name": "com.safed.safed_operator"
+          "package_name": "com.safet.safed_operator"
         }
       },
       "oauth_client": [],

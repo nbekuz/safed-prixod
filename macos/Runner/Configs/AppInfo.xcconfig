@@ -8,7 +8,7 @@
 PRODUCT_NAME = safed_prixod
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.safed.safedpickup
+PRODUCT_BUNDLE_IDENTIFIER = com.safet.safetprixod
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.nbek. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.safet. All rights reserved.
